@@ -1,71 +1,45 @@
-import { Text, View, Button, ScrollView } from 'react-native';
-import styles from '../styles/styles';
+import { Text, View, Button, StyleSheet } from 'react-native';
+import ListView from '../components/ListView'
 
 
-export default function ListPage({ items, itemWidth = 180, itemGap = 20, rowSize = 4 }) {
-  function AddNewItem() {
-    return (
-      <View style={{
-        backgroundColor: 'red',
-        width: itemWidth,
-        height: itemWidth * 1.5,
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <Text>새 악보 추가</Text>
-      </View>
-    )
-  }
+export default function ListPage() {
 
-  function ListItem({ title, image }) {
-    return (
-      <View style={{ gap: 10, justifyContent: 'center' }}>
-        <View style={{ 
-          width: itemWidth, 
-          height: itemWidth * 1.5, 
-          backgroundColor: 'yellow' 
-        }}></View>
-        <Text style={{backgroundColor:'blue', textAlign: 'center' }}>{title}</Text>
-      </View>
-    )
-  }
-
+  const items = [
+    { title: '악보 1', image: '' },
+    { title: '악보 2', image: '' },
+    { title: '악보 3', image: '' },
+    { title: '악보 4', image: '' },
+    { title: '악보 5', image: '' },
+    { title: '악보 6', image: '' },
+    { title: '악보 7', image: '' },
+    { title: '악보 8', image: '' },
+    { title: '악보 9', image: '' },
+    { title: '악보 10', image: '' },
+    { title: '악보 11', image: '' },
+    { title: '악보 12', image: '' },
+    { title: '악보 13', image: '' },
+  ]
+  
   return (
     <View style={{ backgroundColor: 'red', flex: 1, alignSelf: 'stretch' }}>
-      <View style={{ 
-        flexDirection: 'row', 
-        backgroundColor: 'blue',  
-        marginTop: 30,
-        height: 50,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 24,
-      }}>
+      <View style={styles.container}>
         <Text style={{ fontSize: 30 }}>내 악보</Text>
         <Button title='삭제'/>
       </View>
-      <ScrollView>
-        <View style={{ 
-          width: (itemWidth * rowSize) + (itemGap * (rowSize - 1)),
-          alignSelf: 'center',
-          marginHorizontal: 20,
-          backgroundColor: 'blue',
-          paddingTop: 20,
-          marginHorizontal: 'auto',
-          backgroundColor: 'green', 
-          flexDirection: 'row', 
-          justifyContent: 'flex-start', 
-          alignItems: 'flex-start',
-          flexWrap: 'wrap',
-          gap: itemGap,
-        }}>
-          {items.map(item => <ListItem title={item.title} image={item.image}/>)}
-          <AddNewItem/>
-        </View>
-      </ScrollView>
+      <ListView items={items} />
     </View>
   );
 }
 
-
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row', 
+    backgroundColor: 'blue',  
+    marginTop: 30,
+    height: 50,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+  }
+})
 
