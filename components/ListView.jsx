@@ -1,4 +1,4 @@
-import { Text, View, ScrollView, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
 
 export default function ListView({ items, itemWidth = 180, itemGap = 20, rowSize = 4 }) {
   function AddNewItem() {
@@ -22,7 +22,9 @@ export default function ListView({ items, itemWidth = 180, itemGap = 20, rowSize
           width: itemWidth, 
           height: itemWidth * 1.5, 
           backgroundColor: 'yellow' 
-        }}></View>
+        }}>
+          <Image style={ styles.image } source={image} />
+        </View>
         <Text style={{backgroundColor:'blue', textAlign: 'center' }}>{title}</Text>
       </View>
     )
@@ -53,6 +55,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', 
     alignItems: 'flex-start',
     flexWrap: 'wrap',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain'
   }
 })
 

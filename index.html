@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>music</title>
+  </head>
+  <body>
+    <h1 id="myHeader">Hello, world!</h1>
+    <div id="osmdContainer"/>
+    <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
+    <script>
+      var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
+      console.log(osmd);
+      osmd.setOptions({
+        backend: "svg",
+        drawTitle: true,
+        // drawingParameters: "compacttight" // don't display title, composer etc., smaller margins
+      });
+      osmd
+        .load("https://d25xa25ndkjvmh.cloudfront.net/MozaVeilSample.xml")
+        .then(
+          function() {
+            osmd.render();
+          }
+        );
+    </script>
+  </body>
+</html>
+
