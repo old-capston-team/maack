@@ -1,6 +1,6 @@
 let onLogChange = null;
 
-const setOnLogChange = (callback) => {
+const setOnLogChange = (callback: (prevState: undefined) => undefined) => {
   onLogChange = callback;
 };
 
