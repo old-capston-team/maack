@@ -1,15 +1,15 @@
 import { Text, View, Button } from "react-native";
 import styles from "../styles/styles";
 import { Audio } from "expo-av";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WebView from "react-native-webview";
 
 export default function TestPage() {
-  const [recording, setRecording] = useState();
+  const [recording, setRecording] = useState<Audio.Recording>();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
-  const [uri, setUri] = useState();
-  const [sound, setSound] = useState();
-  const [color, setColor] = useState(0);
+  const [uri, setUri] = useState<string>();
+  const [sound, setSound] = useState<Audio.Sound>();
+  const webviewRef = useRef<WebView>();
 
   useEffect(() => {
     return sound
@@ -39,7 +39,7 @@ export default function TestPage() {
 
   const startRecording = async () => {
     try {
-      if (permissionResponse.status !== "granded") {
+      if (permissionResponse.status !== "granted") {
         console.log("Requesting permission...");
         await requestPermission();
       }
@@ -81,9 +81,12 @@ export default function TestPage() {
   </head>
   <body>
     <div id="osmdContainer"/>
+    <div id="debug"></div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
-      var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
+      const debug = document.getElementById("debug");
+      let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
+      let cursor;
       console.log(osmd);
       osmd.setOptions({
         backend: "svg",
@@ -95,18 +98,46 @@ export default function TestPage() {
         .then(
           function() {
             osmd.render();
+            cursor = osmd.cursor;
+            cursor.show();
           }
         );
+      window.addEventListener('message', (event) => {
+        const action = JSON.parse(event.data);
+        if (action.type === 'next') {
+          cursor.next();
+        } else if (action.type === 'prev') {
+          cursor.previous();
+        } else if (action.type === 'jump') {
+          const measureNumber = action.payload;
+          if (measureNumber < 1 || measureNumber > osmd.GraphicSheet.MeasureList.length) {
+              debug.textContent = "Invalid measure number";
+              return;
+          }
+
+          cursor.reset();
+          
+          while (cursor.iterator.CurrentMeasureIndex + 1 < measureNumber) {
+              cursor.next();
+          }
+        } else if (action.type === 'show') {
+          cursor.show();
+        } else if (action.type === 'hide') {
+          cursor.hide();
+        }
+      })
     </script>
   </body>
 </html>
 
   `;
 
+  type MessageType = "next" | "prev" | "jump" | "show" | "hide";
+
   return (
     <View style={styles.container}>
       <WebView
-        ref={(r) => (this.webref = r)}
+        ref={webviewRef}
         onMessage={(event) => {}}
         style={{
           flex: 3,
@@ -117,13 +148,38 @@ export default function TestPage() {
           borderRadius: 8,
         }}
         source={{ html: html }}
-        injectedJavaScript={`
-          window.addEventListener('message', (event) => {
-            const data = JSON.parse(event.data);
-            const header = document.getElementById("myHeader");
-            header.style.color = data.color;
-          })
-        `}
+      />
+      <Button
+        title="Show"
+        onPress={() =>
+          webviewRef.current.postMessage(JSON.stringify({ type: "show" }))
+        }
+      />
+      <Button
+        title="Hide"
+        onPress={() =>
+          webviewRef.current.postMessage(JSON.stringify({ type: "hide" }))
+        }
+      />
+      <Button
+        title="Next"
+        onPress={() =>
+          webviewRef.current.postMessage(JSON.stringify({ type: "next" }))
+        }
+      />
+      <Button
+        title="Prev"
+        onPress={() =>
+          webviewRef.current.postMessage(JSON.stringify({ type: "prev" }))
+        }
+      />
+      <Button
+        title="Go to 3"
+        onPress={() =>
+          webviewRef.current.postMessage(
+            JSON.stringify({ type: "jump", payload: 3 }),
+          )
+        }
       />
     </View>
   );
