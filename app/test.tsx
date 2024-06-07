@@ -10,6 +10,7 @@ export default function TestPage() {
   const [uri, setUri] = useState<string>();
   const [sound, setSound] = useState<Audio.Sound>();
   const webviewRef = useRef<WebView>();
+  const musicURL = "http://myboj.duckdns.org:9999/assets/output.musicxml";
 
   useEffect(() => {
     return sound
@@ -80,38 +81,55 @@ export default function TestPage() {
     <title>music</title>
   </head>
   <body>
-    <div id="osmdContainer"/>
-    <div id="debug"></div>
+    <div id="osmdContainer" style="overflow: auto;"/>
+    <div id="debug">hello!!</div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
       const debug = document.getElementById("debug");
       let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
       let cursor;
-      console.log(osmd);
+      let padding;
+
       osmd.setOptions({
         backend: "svg",
         drawTitle: true,
         // drawingParameters: "compacttight" // don't display title, composer etc., smaller margins
       });
       osmd
-        .load("https://d25xa25ndkjvmh.cloudfront.net/MozaVeilSample.xml")
+        .load("${musicURL}")
         .then(
           function() {
             osmd.render();
             cursor = osmd.cursor;
+            cursor.CursorOptions.follow = false;
             cursor.show();
+            padding = cursor.cursorElement.getBoundingClientRect().top;
           }
         );
+
+      function scrollToCursor() {
+        const container = document.getElementById("osmdContainer");
+        const cursorElement = cursor.cursorElement;
+        
+        // Get the cursor's position
+        const cursorRect = cursorElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const moveDist = window.scrollY + cursorRect.top - padding;
+        debug.innerHTML = "Cursor position: " + moveDist;
+        window.scrollTo({top: moveDist, left: 0, behavior: 'smooth'});
+      }
       window.addEventListener('message', (event) => {
         const action = JSON.parse(event.data);
         if (action.type === 'next') {
           cursor.next();
+          scrollToCursor();
         } else if (action.type === 'prev') {
           cursor.previous();
+          scrollToCursor();
         } else if (action.type === 'jump') {
           const measureNumber = action.payload;
           if (measureNumber < 1 || measureNumber > osmd.GraphicSheet.MeasureList.length) {
-              debug.textContent = "Invalid measure number";
+              debug.innerHTML = "Invalid measure number";
               return;
           }
 
@@ -120,6 +138,7 @@ export default function TestPage() {
           while (cursor.iterator.CurrentMeasureIndex + 1 < measureNumber) {
               cursor.next();
           }
+          scrollToCursor();
         } else if (action.type === 'show') {
           cursor.show();
         } else if (action.type === 'hide') {
@@ -174,10 +193,10 @@ export default function TestPage() {
         }
       />
       <Button
-        title="Go to 3"
+        title="Go to 20"
         onPress={() =>
           webviewRef.current.postMessage(
-            JSON.stringify({ type: "jump", payload: 3 }),
+            JSON.stringify({ type: "jump", payload: 20 }),
           )
         }
       />

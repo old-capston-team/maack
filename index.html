@@ -6,25 +6,72 @@
     <title>music</title>
   </head>
   <body>
-    <h1 id="myHeader">Hello, world!</h1>
-    <div id="osmdContainer"/>
+    <div id="osmdContainer" style="overflow: auto;"/>
+    <div id="debug">hello!!</div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
-      var osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
-      console.log(osmd);
+      const debug = document.getElementById("debug");
+      let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
+      let cursor;
+
       osmd.setOptions({
         backend: "svg",
         drawTitle: true,
         // drawingParameters: "compacttight" // don't display title, composer etc., smaller margins
       });
       osmd
-        .load("https://d25xa25ndkjvmh.cloudfront.net/MozaVeilSample.xml")
+        .load("http://myboj.duckdns.org:9999/assets/output.musicxml")
         .then(
           function() {
             osmd.render();
+            cursor = osmd.cursor;
+            cursor.CursorOptions.follow = false;
+            cursor.show();
           }
         );
+
+      function scrollToCursor() {
+        const container = document.getElementById("osmdContainer");
+        const cursorElement = cursor.cursorElement;
+        
+        // Get the cursor's position
+        const cursorRect = cursorElement.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        debug.innerHTML = "Cursor top: " + cursorRect.top + ", Cursor bottom: " + cursorRect.bottom + "<br>";
+        
+        // Check if cursor is out of the visible area and scroll accordingly
+        if (cursorRect.top < containerRect.top || cursorRect.bottom > containerRect.bottom) {
+          const top = cursorRect.top - containerRect.top - containerRect.height / 2;
+          window.scrollTo({top: top, left: 0, behavior: 'smooth'});
+        }
+      }
+      window.addEventListener('message', (event) => {
+        const action = JSON.parse(event.data);
+        if (action.type === 'next') {
+          cursor.next();
+          scrollToCursor();
+        } else if (action.type === 'prev') {
+          cursor.previous();
+          scrollToCursor();
+        } else if (action.type === 'jump') {
+          const measureNumber = action.payload;
+          if (measureNumber < 1 || measureNumber > osmd.GraphicSheet.MeasureList.length) {
+              debug.innerHTML = "Invalid measure number";
+              return;
+          }
+
+          cursor.reset();
+          
+          while (cursor.iterator.CurrentMeasureIndex + 1 < measureNumber) {
+              cursor.next();
+          }
+          scrollToCursor();
+        } else if (action.type === 'show') {
+          cursor.show();
+        } else if (action.type === 'hide') {
+          cursor.hide();
+        }
+      })
     </script>
   </body>
 </html>
-

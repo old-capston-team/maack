@@ -4,7 +4,7 @@ import Logger from "../utils/Logger";
 import { useState } from "react";
 
 export default function App() {
-  const [log, setLog] = useState();
+  const [log, setLog] = useState<string>();
 
   Logger.setOnLogChange(setLog);
 
@@ -25,6 +25,8 @@ export default function App() {
         <Stack.Screen name="test" />
         <Stack.Screen name="list" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="websocket" />
+        <Stack.Screen name="document" />
       </Stack>
       <View style={styles.logBox}>
         <Text testID="pressable_press_console">{log}</Text>
