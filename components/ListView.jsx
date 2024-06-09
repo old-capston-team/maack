@@ -1,44 +1,58 @@
-import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, StyleSheet } from "react-native";
+import { Image } from "expo-image";
 
-export default function ListView({ items, itemWidth = 180, itemGap = 20, rowSize = 4 }) {
+export default function ListView({
+  items,
+  itemWidth = 180,
+  itemGap = 20,
+  rowSize = 4,
+}) {
   function AddNewItem() {
     return (
-      <View style={{
-        backgroundColor: 'red',
-        width: itemWidth,
-        height: itemWidth * 1.5,
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
+      <View
+        style={{
+          width: itemWidth,
+          height: itemWidth * 1.5,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Text>새 악보 추가</Text>
       </View>
-    )
+    );
   }
 
   function ListItem({ title, image }) {
     return (
-      <View style={{ gap: 10, justifyContent: 'center' }}>
-        <View style={{ 
-          width: itemWidth, 
-          height: itemWidth * 1.5, 
-          backgroundColor: 'yellow' 
-        }}>
-          <Image style={ styles.image } source={image} />
+      <View style={{ gap: 10, justifyContent: "center" }}>
+        <View
+          style={{
+            width: itemWidth,
+            height: itemWidth * 1.5,
+          }}
+        >
+          <Image style={styles.image} source="kingbeee" />
         </View>
-        <Text style={{backgroundColor:'blue', textAlign: 'center' }}>{title}</Text>
+        <Text style={{ textAlign: "center" }}>{title}</Text>
       </View>
-    )
+    );
   }
 
   return (
     <ScrollView>
-      <View style={[{ 
-        width: (itemWidth * rowSize) + (itemGap * (rowSize - 1)),
-        gap: itemGap,
-      }, styles.listContainer ]}>
-        {items.map((item, index) => 
-          <ListItem key={index} title={item.title} image={item.image} />)}
-        <AddNewItem/>
+      <View
+        style={[
+          {
+            width: itemWidth * rowSize + itemGap * (rowSize - 1),
+            gap: itemGap,
+          },
+          styles.listContainer,
+        ]}
+      >
+        {items.map((item, index) => (
+          <ListItem key={index} title={item.title} image={item.image} />
+        ))}
+        <AddNewItem />
       </View>
     </ScrollView>
   );
@@ -46,21 +60,18 @@ export default function ListView({ items, itemWidth = 180, itemGap = 20, rowSize
 
 const styles = StyleSheet.create({
   listContainer: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginHorizontal: 20,
-    backgroundColor: 'blue',
     paddingTop: 20,
-    backgroundColor: 'green', 
-    flexDirection: 'row', 
-    justifyContent: 'flex-start', 
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    flexWrap: "wrap",
   },
   image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain'
-  }
-})
-
-
+    flex: 1,
+    width: "100%",
+    backgroundColor: "lightgray",
+    contentFit: "cover",
+  },
+});

@@ -3,6 +3,7 @@ import styles from "../styles/styles";
 import Logger from "../utils/Logger";
 import * as DocumentPicker from "expo-document-picker";
 import * as FileSystem from "expo-file-system";
+import PdfThumbnail from "react-native-pdf-thumbnail";
 
 export default function DocumentPage() {
   const readFile = async (uri: string) => {

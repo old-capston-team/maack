@@ -13,11 +13,11 @@ export default function App() {
       <Stack
         screenOptions={{
           headerStyle: {
-            backgroundColor: "#f4511e",
+            backgroundColor: "#101827",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {
-            fontWeight: "bold",
+            fontWeight: "normal",
           },
         }}
       >
@@ -27,6 +27,7 @@ export default function App() {
         <Stack.Screen name="login" />
         <Stack.Screen name="websocket" />
         <Stack.Screen name="document" />
+        <Stack.Screen name="image" />
       </Stack>
       <View style={styles.logBox}>
         <Text testID="pressable_press_console">{log}</Text>

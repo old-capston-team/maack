@@ -11,6 +11,7 @@ export default function App() {
       <LinkButton title="Test" href="/test" />
       <LinkButton title="WebSocket" href="/websocket" />
       <LinkButton title="Document" href="/document" />
+      <LinkButton title="Image" href="/image" />
       <StatusBar style="auto" />
     </View>
   );

@@ -2,10 +2,22 @@ import { Text, View, Button } from "react-native";
 import styles from "../styles/styles";
 import Logger from "../utils/Logger";
 import useWebSocket, { ReadyState } from "react-use-websocket";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import useRecording from "../hooks/useRecording";
+import Constants from "expo-constants";
 
 export default function WebSocketPage() {
-  const socketUrl = "ws://222.98.35.241:80/tracking_progress";
+  const socketUrl = `ws://${process.env.EXPO_PUBLIC_AI_HOST}/echo`;
+  console.log(socketUrl);
+  const timerRef = useRef<any>();
+  const [startRecording, stopRecording] = useRecording(
+    (recording) => {
+      console.log("new recording: " + recording.substring(0, 100) + "...");
+    },
+    (err) => {
+      console.error("recording Error: " + err);
+    },
+  );
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
 
@@ -17,9 +29,13 @@ export default function WebSocketPage() {
     [ReadyState.UNINSTANTIATED]: "Uninstantiated",
   }[readyState];
 
+  // useEffect(() => {
+  //   Logger.log(connectionStatus);
+  // }, [connectionStatus]);
+
   useEffect(() => {
-    Logger.log(connectionStatus);
-  }, [connectionStatus]);
+    if (lastMessage) Logger.log("lastMessage: " + lastMessage.data);
+  }, [lastMessage]);
 
   return (
     <View style={styles.container}>
@@ -29,11 +45,13 @@ export default function WebSocketPage() {
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Button
           onPress={() => {
-            sendMessage(JSON.stringify({ sheet_name: "hello" }));
-            Logger.log(connectionStatus);
-            if (lastMessage) {
-              Logger.log(lastMessage.data);
-            }
+            sendMessage(JSON.stringify({ sheet_music_id: 1 }));
+            // Logger.log(connectionStatus);
+            // startRecording();
+            // timerRef.current = setInterval(async () => {
+            //   await stopRecording();
+            //   await startRecording();
+            // }, 5000);
           }}
           title="Send hello"
         />
