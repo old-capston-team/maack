@@ -16,7 +16,7 @@ export default function widgetTestPage() {
             thumbnail={thumbnailURL}
             title="Ocarina medley"
             onPress={() => {
-              console.log("press");
+              console.log("press " + item);
             }}
           />
         ))}

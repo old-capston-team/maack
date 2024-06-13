@@ -19,7 +19,8 @@ export default function CardBase(props: CardBaseProps) {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
     margin: 8,
     backgroundColor: "#fff",
     borderRadius: 8,
