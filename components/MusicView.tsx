@@ -24,7 +24,6 @@ const MusicView = forwardRef((props: MusicViewProps, ref) => {
     <div id="debug">hello!!</div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
-      const debug = document.getElementById("debug");
       let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
       let cursor;
       let padding;

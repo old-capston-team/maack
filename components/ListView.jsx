@@ -31,7 +31,7 @@ export default function ListView({
             height: itemWidth * 1.5,
           }}
         >
-          <Image style={styles.image} source="kingbeee" />
+          <Image style={styles.image} source={image} />
         </View>
         <Text style={{ textAlign: "center" }}>{title}</Text>
       </View>

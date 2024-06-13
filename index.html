@@ -10,7 +10,6 @@
     <div id="debug">hello!!</div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
-      const debug = document.getElementById("debug");
       let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
       let cursor;
 
@@ -20,7 +19,7 @@
         // drawingParameters: "compacttight" // don't display title, composer etc., smaller margins
       });
       osmd
-        .load("https://s3.ap-northeast-2.amazonaws.com/maack.bucket/musicxml/ca75eb88-6f94-4f73-8189-2298f62a238f.xml")
+        .load("https://s3.ap-northeast-2.amazonaws.com/maack.bucket/musicxml/9cc20038-731b-4022-a6a8-5c8a5f2e430e.xml")
         .then(
           function() {
             osmd.render();
@@ -45,32 +44,18 @@
           window.scrollTo({top: top, left: 0, behavior: 'smooth'});
         }
       }
+
       window.addEventListener('message', (event) => {
         const action = JSON.parse(event.data);
-        if (action.type === 'next') {
-          cursor.next();
-          scrollToCursor();
-        } else if (action.type === 'prev') {
-          cursor.previous();
-          scrollToCursor();
-        } else if (action.type === 'jump') {
-          const measureNumber = action.payload;
-          if (measureNumber < 1 || measureNumber > osmd.GraphicSheet.MeasureList.length) {
-              debug.innerHTML = "Invalid measure number";
-              return;
-          }
-
+        if (action.type === 'jump') {
+          const noteIndex = action.payload;
           cursor.reset();
           
-          while (cursor.iterator.CurrentMeasureIndex + 1 < measureNumber) {
-              cursor.next();
+          for (let i = 0; i < noteIndex; i++) {
+            cursor.next();
           }
           scrollToCursor();
-        } else if (action.type === 'show') {
-          cursor.show();
-        } else if (action.type === 'hide') {
-          cursor.hide();
-        }
+        }      
       })
     </script>
   </body>

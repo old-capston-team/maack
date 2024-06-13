@@ -2,20 +2,21 @@ import { Text, View, Button, StyleSheet } from "react-native";
 import ListView from "../components/ListView";
 
 export default function ListPage() {
+  const thumbnailURL = `http://${process.env.EXPO_PUBLIC_CDN_HOST}/assets/pdf_thumbnail_1.jpg`;
   const items = [
-    { title: "악보 1", image: "kingbee" },
-    { title: "악보 2", image: "kingbee" },
-    { title: "악보 3", image: "kingbee" },
-    { title: "악보 4", image: "kingbee" },
-    { title: "악보 5", image: "kingbee" },
-    { title: "악보 6", image: "kingbee" },
-    { title: "악보 7", image: "kingbee" },
-    { title: "악보 8", image: "kingbee" },
-    { title: "악보 9", image: "kingbee" },
-    { title: "악보 10", image: "kingbee" },
-    { title: "악보 11", image: "kingbee" },
-    { title: "악보 12", image: "kingbee" },
-    { title: "악보 13", image: "kingbee" },
+    { title: "악보 1", image: thumbnailURL },
+    { title: "악보 2", image: thumbnailURL },
+    { title: "악보 3", image: thumbnailURL },
+    { title: "악보 4", image: thumbnailURL },
+    { title: "악보 5", image: thumbnailURL },
+    { title: "악보 6", image: thumbnailURL },
+    { title: "악보 7", image: thumbnailURL },
+    { title: "악보 8", image: thumbnailURL },
+    { title: "악보 9", image: thumbnailURL },
+    { title: "악보 10", image: thumbnailURL },
+    { title: "악보 11", image: thumbnailURL },
+    { title: "악보 12", image: thumbnailURL },
+    { title: "악보 13", image: thumbnailURL },
   ];
 
   return (
