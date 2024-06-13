@@ -11,7 +11,9 @@ export default function MusicCard(props: MusicCardProps) {
   return (
     <CardBase onPress={props.onPress}>
       <Image style={styles.thumbnail} source={props.thumbnail} />
-      <Text style={styles.title}>{props.title}</Text>
+      <Text style={styles.title} numberOfLines={1}>
+        {props.title}
+      </Text>
     </CardBase>
   );
 }
@@ -24,6 +26,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   title: {
+    paddingHorizontal: 16,
     marginTop: 16,
     fontSize: 12,
     fontWeight: "bold",

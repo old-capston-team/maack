@@ -14,7 +14,7 @@ export default function widgetTestPage() {
           <MusicCard
             key={item}
             thumbnail={thumbnailURL}
-            title="Ocarina medley"
+            title="Ocarina medley blablablabla"
             onPress={() => {
               console.log("press " + item);
             }}
