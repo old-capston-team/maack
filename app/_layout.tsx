@@ -28,6 +28,7 @@ export default function App() {
         <Stack.Screen name="websocket" />
         <Stack.Screen name="document" />
         <Stack.Screen name="image" />
+        <Stack.Screen name="widgetTest" />
       </Stack>
       <View style={styles.logBox}>
         <Text testID="pressable_press_console">{log}</Text>

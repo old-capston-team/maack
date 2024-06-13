@@ -9,7 +9,7 @@ import useWebSocket from "../hooks/useWebSocket";
 export default function TestPage() {
   const router = useRouter();
   const musicViewRef = useRef<any>();
-  const [musicLoaded, setMusicLoaded] = useState<boolean>(false);
+  const [isMusicLoaded, setIsMusicLoaded] = useState<boolean>(false);
   const [isEnd, setIsEnd] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout>();
   const url =
@@ -18,9 +18,7 @@ export default function TestPage() {
   const { connect, disconnect, sendMessage, isOpen } = useWebSocket(
     (message) => {
       const response = JSON.parse(message);
-      console.log(response.best_end);
       musicViewRef?.current?.jumpTo(response.best_end);
-      console.log("message sent to webview");
 
       if (response.isFinished) {
         clearInterval(intervalRef.current);
@@ -49,7 +47,7 @@ export default function TestPage() {
   }, []);
 
   useEffect(() => {
-    if (isOpen && musicLoaded) {
+    if (isOpen && isMusicLoaded) {
       sendMessage(JSON.stringify({ sheet_music_id: 1 }));
       startRecording();
 
@@ -63,7 +61,7 @@ export default function TestPage() {
         stopRecording();
       };
     }
-  }, [isOpen, musicLoaded]);
+  }, [isOpen, isMusicLoaded]);
 
   return (
     <View style={styles.container}>
@@ -72,12 +70,12 @@ export default function TestPage() {
         ref={musicViewRef}
         url={url}
         onLoaded={() => {
-          setMusicLoaded(true);
+          setIsMusicLoaded(true);
           console.log("music loaded");
         }}
       />
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={isEnd}
         onRequestClose={() => {

@@ -11,7 +11,7 @@ app.ws("/echo", (ws, req) => {
 
 app.ws("/tracking_progress", (ws, req) => {
   let initialized = false;
-  let index = 0;
+  let index = 300;
   ws.on("message", (msg) => {
     console.log("got message: " + msg);
     if (!initialized) {

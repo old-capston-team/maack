@@ -19,7 +19,7 @@ export async function getMyMusic(): Promise<Array<SheetMusic>> {
       const data = response.data;
       if (data.isSuccess) {
         return data.result.mySheetMusicList.map(
-          (music) => music.pdfFileList[0],
+          (music: any) => music.pdfFileList[0],
         );
       } else {
         throw new Error(data.message);
