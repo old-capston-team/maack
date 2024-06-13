@@ -22,7 +22,7 @@ app.ws("/tracking_progress", (ws, req) => {
         JSON.stringify({
           best_start: index,
           best_end: index + 8,
-          isFinished: index > 200,
+          isFinished: index > 356,
         }),
       );
       index += 8;
