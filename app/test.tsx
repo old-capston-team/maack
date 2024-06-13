@@ -9,8 +9,8 @@ import useWebSocket from "../hooks/useWebSocket";
 export default function TestPage() {
   const router = useRouter();
   const musicViewRef = useRef<any>();
-  const [musicLoaded, setMusicLoaded] = useState(false);
-  const [isEnd, setIsEnd] = useState(false);
+  const [musicLoaded, setMusicLoaded] = useState<boolean>(false);
+  const [isEnd, setIsEnd] = useState<boolean>(false);
   const intervalRef = useRef<NodeJS.Timeout>();
   const url =
     "https://s3.ap-northeast-2.amazonaws.com/maack.bucket/musicxml/9cc20038-731b-4022-a6a8-5c8a5f2e430e.xml";
