@@ -1,19 +1,36 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, Modal } from "react-native";
 import styles from "../styles/styles";
 import { useEffect, useRef, useState } from "react";
 import MusicView from "../components/MusicView";
 import useRecording from "../hooks/useRecording";
-import useWebSocket, { ReadyState } from "react-use-websocket";
-import Logger from "../utils/Logger";
+import { useRouter } from "expo-router";
+import useWebSocket from "../hooks/useWebSocket";
 
 export default function TestPage() {
+  const router = useRouter();
   const musicViewRef = useRef<any>();
-  const intervalRef = useRef<any>();
   const [musicLoaded, setMusicLoaded] = useState(false);
+  const [isEnd, setIsEnd] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout>();
   const url =
     "https://s3.ap-northeast-2.amazonaws.com/maack.bucket/musicxml/9cc20038-731b-4022-a6a8-5c8a5f2e430e.xml";
   const socketUrl = `ws://${process.env.EXPO_PUBLIC_AI_HOST}/tracking_progress`;
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl);
+  const { connect, disconnect, sendMessage, isOpen } = useWebSocket(
+    (message) => {
+      const response = JSON.parse(message);
+      console.log(response.best_end);
+      musicViewRef?.current?.jumpTo(response.best_end);
+      console.log("message sent to webview");
+
+      if (response.isFinished) {
+        clearInterval(intervalRef.current);
+        setIsEnd(true);
+      }
+    },
+    (err) => {
+      console.error("websocket error: " + err);
+    },
+  );
   const [startRecording, stopRecording] = useRecording(
     (recording) => {
       sendMessage(JSON.stringify({ recording: recording }));
@@ -23,44 +40,39 @@ export default function TestPage() {
     },
   );
 
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: "Connecting",
-    [ReadyState.OPEN]: "Open",
-    [ReadyState.CLOSING]: "Closing",
-    [ReadyState.CLOSED]: "Closed",
-    [ReadyState.UNINSTANTIATED]: "Uninstantiated",
-  }[readyState];
+  useEffect(() => {
+    connect(socketUrl);
+    return () => {
+      disconnect();
+    };
+  }, []);
 
   useEffect(() => {
-    console.log("status changed?");
-    Logger.log(connectionStatus);
-    if (connectionStatus === "Open" && !intervalRef) {
+    console.log("isOpen: " + isOpen);
+    console.log("musicLoaded: " + musicLoaded);
+    if (isOpen && musicLoaded) {
       console.log("recording started");
       sendMessage(JSON.stringify({ sheet_music_id: 1 }));
       startRecording();
+
+      console.log("recording interval started");
       intervalRef.current = setInterval(async () => {
         await stopRecording();
         startRecording();
       }, 2000);
-    }
 
-    return () => {
-      intervalRef.current?.clear();
-    };
-  }, [connectionStatus, musicLoaded]);
-
-  useEffect(() => {
-    if (lastMessage && musicViewRef?.current) {
-      const response = JSON.parse(lastMessage.data);
-      console.log(response.best_end);
-      musicViewRef?.current?.jumpTo(response.best_end);
-      console.log("message sent to webview");
+      return () => {
+        console.log("recording interval cleared");
+        clearInterval(intervalRef.current);
+        stopRecording();
+      };
     }
-  }, [lastMessage?.data]);
+  }, [isOpen, musicLoaded]);
 
   console.log("re-render");
   return (
     <View style={styles.container}>
+      <Text>{isOpen ? "Connected" : "Disconnected"}</Text>
       <MusicView
         ref={musicViewRef}
         url={url}
@@ -69,7 +81,34 @@ export default function TestPage() {
           console.log("music loaded");
         }}
       />
-      <Text>{lastMessage ? lastMessage.data : ""}</Text>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isEnd}
+        onRequestClose={() => {
+          setIsEnd(false);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>연주가 끝났습니다! 😄</Text>
+            <View style={styles.modalButtonView}>
+              <Button
+                title="돌아가기"
+                onPress={() => {
+                  router.back();
+                }}
+              />
+              <Button
+                title="다시 연주하기"
+                onPress={() => {
+                  console.log("replay");
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
