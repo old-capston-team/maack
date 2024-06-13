@@ -1,5 +1,4 @@
 import WebView from "react-native-webview";
-import styles from "../styles/styles";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 
 interface MusicViewProps {
@@ -21,7 +20,6 @@ const MusicView = forwardRef((props: MusicViewProps, ref) => {
   </head>
   <body>
     <div id="osmdContainer" style="overflow: auto;"/>
-    <div id="debug">hello!!</div>
     <script src="https://github.com/opensheetmusicdisplay/opensheetmusicdisplay/releases/download/1.8.8/opensheetmusicdisplay.min.js"></script>
     <script>
       let osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay("osmdContainer");
@@ -49,12 +47,10 @@ const MusicView = forwardRef((props: MusicViewProps, ref) => {
       function scrollToCursor() {
         const container = document.getElementById("osmdContainer");
         const cursorElement = cursor.cursorElement;
-        
-        // Get the cursor's position
+
         const cursorRect = cursorElement.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
         const moveDist = window.scrollY + cursorRect.top - padding;
-        debug.innerHTML = "Cursor position: " + moveDist;
         window.scrollTo({top: moveDist, left: 0, behavior: 'smooth'});
       }
       window.addEventListener('message', (event) => {
@@ -67,7 +63,10 @@ const MusicView = forwardRef((props: MusicViewProps, ref) => {
             cursor.next();
           }
           scrollToCursor();
-        }      
+        } else if (action.type === 'reset') {
+          cursor.reset();
+          scrollToCursor();
+        }
       })
     </script>
   </body>
@@ -80,8 +79,13 @@ const MusicView = forwardRef((props: MusicViewProps, ref) => {
     );
   }
 
+  function reset() {
+    webviewRef.current.postMessage(JSON.stringify({ type: "reset" }));
+  }
+
   useImperativeHandle(ref, () => ({
     jumpTo,
+    reset,
   }));
 
   return (

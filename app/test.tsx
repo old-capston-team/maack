@@ -24,6 +24,7 @@ export default function TestPage() {
 
       if (response.isFinished) {
         clearInterval(intervalRef.current);
+        disconnect();
         setIsEnd(true);
       }
     },
@@ -48,28 +49,22 @@ export default function TestPage() {
   }, []);
 
   useEffect(() => {
-    console.log("isOpen: " + isOpen);
-    console.log("musicLoaded: " + musicLoaded);
     if (isOpen && musicLoaded) {
-      console.log("recording started");
       sendMessage(JSON.stringify({ sheet_music_id: 1 }));
       startRecording();
 
-      console.log("recording interval started");
       intervalRef.current = setInterval(async () => {
         await stopRecording();
         startRecording();
       }, 2000);
 
       return () => {
-        console.log("recording interval cleared");
         clearInterval(intervalRef.current);
         stopRecording();
       };
     }
   }, [isOpen, musicLoaded]);
 
-  console.log("re-render");
   return (
     <View style={styles.container}>
       <Text>{isOpen ? "Connected" : "Disconnected"}</Text>
@@ -102,7 +97,9 @@ export default function TestPage() {
               <Button
                 title="다시 연주하기"
                 onPress={() => {
-                  console.log("replay");
+                  musicViewRef?.current?.reset();
+                  setIsEnd(false);
+                  connect(socketUrl);
                 }}
               />
             </View>
