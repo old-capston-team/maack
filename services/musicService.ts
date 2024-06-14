@@ -1,7 +1,7 @@
 import axios from "axios";
 import FormData from "form-data";
 
-type SheetMusic = {
+export type SheetMusic = {
   pdfFileId: number;
   fileName: string;
   url: string;
