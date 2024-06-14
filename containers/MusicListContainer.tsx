@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { SheetMusic, getMyMusic, postMusicPDF } from "../services/musicService";
 import { View, Text, StyleSheet } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
+import Toast from "react-native-root-toast";
 import MusicCard from "../components/MusicCard";
 import LoadingCard from "../components/LoadingCard";
 import IconCard from "../components/IconCard";
@@ -30,10 +31,20 @@ export default function MusicListContainer() {
     const res = await DocumentPicker.getDocumentAsync({
       type: ["application/pdf"],
     });
+    if (res.canceled) {
+      Toast.show("악보 등록을 취소했습니다.", {
+        duration: Toast.durations.SHORT,
+      });
+      return;
+    }
     setIsUploading(true);
     const result = await postMusicPDF(res.assets[0].uri);
     setIsUploading(false);
     if (result) {
+      Toast.show("악보가 변환되었습니다!", {
+        duration: Toast.durations.SHORT,
+      });
+
       reloadMusicList();
     }
   };
@@ -46,7 +57,7 @@ export default function MusicListContainer() {
           <MusicCard
             key={id}
             thumbnail={thumbnailURL}
-            title="Ocarina medley blablablabla"
+            title={item.fileName}
             onPress={() => {
               console.log("press " + item);
             }}
