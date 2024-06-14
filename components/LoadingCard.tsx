@@ -1,10 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Image, ImageSource } from "expo-image";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import CardBase, { CardBaseProps } from "./CardBase";
-import { AntDesign } from "@expo/vector-icons";
 
 interface IconCardProps extends CardBaseProps {
-  icon: string;
   title?: string | undefined;
   size?: number | undefined;
   color?: string | undefined;
@@ -15,10 +12,9 @@ export default function IconCard(props: IconCardProps) {
     <CardBase onPress={props.onPress}>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
-          <AntDesign
-            name={props.icon}
-            size={props.size || 24}
-            color={props.color || "#000"}
+          <ActivityIndicator
+            size={props.size || "large"}
+            color={props.color || "#101827"}
           />
         </View>
         <Text style={styles.title}>{props.title}</Text>
@@ -41,6 +37,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 12,
     fontWeight: "bold",
-    color: "#333",
+    color: "#777",
   },
 });

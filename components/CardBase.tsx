@@ -1,8 +1,8 @@
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 export interface CardBaseProps {
-  onPress?: () => void;
-  children?: React.ReactNode;
+  onPress?: () => void | undefined;
+  children?: React.ReactNode | undefined;
 }
 
 export default function CardBase(props: CardBaseProps) {

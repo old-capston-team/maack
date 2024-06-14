@@ -1,4 +1,5 @@
 import IconCard from "../components/IconCard";
+import LoadingCard from "../components/LoadingCard";
 import MusicCard from "../components/MusicCard";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -20,6 +21,7 @@ export default function widgetTestPage() {
             }}
           />
         ))}
+        <LoadingCard title="악보를 생성중..." />
         <IconCard icon="pluscircleo" title="악보 추가" />
       </View>
     </View>
