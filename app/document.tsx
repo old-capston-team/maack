@@ -2,21 +2,10 @@ import { Text, View, Button } from "react-native";
 import styles from "../styles/styles";
 import Logger from "../utils/Logger";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import { postMusicPDF } from "../services/musicService";
+import FormData from "form-data";
 
 export default function DocumentPage() {
-  const readFile = async (uri: string) => {
-    try {
-      const content = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-      Uint8Array;
-      return content;
-    } catch (error) {
-      console.error("Error reading file: ", error);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, justifyContent: "center" }}>
@@ -24,12 +13,14 @@ export default function DocumentPage() {
       </View>
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Button
-          onPress={() => {
+          onPress={async () => {
             Logger.log("Upload PDF button pressed");
-            DocumentPicker.getDocumentAsync().then((result) => {
-              readFile(result.assets[0].uri).then((content) => {
-                Logger.log(content.substring(0, 100) + "...");
-              });
+            const res = await DocumentPicker.getDocumentAsync({
+              type: ["application/pdf"],
+            });
+            console.log("upload started");
+            postMusicPDF(res.assets[0].uri).then((success) => {
+              console.log(success ? "upload success" : "upload failed");
             });
           }}
           title="Upload PDF"
