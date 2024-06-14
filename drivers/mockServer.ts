@@ -30,6 +30,51 @@ app.ws("/tracking_progress", (ws, req) => {
   });
 });
 
+app.get("/api/v1/sheet-musics/me", (req, res) => {
+  res.send({
+    isSuccess: true,
+    code: "1000",
+    message: "요청에 성공하였습니다.",
+    result: {
+      mySheetMusicList: [
+        {
+          sheetMusicId: 1,
+          pdfFileList: [
+            {
+              pdfFileId: 1,
+              fileName: "ocarina.pdf",
+              fileSize: 1024,
+              url: "https://example.com/ocarina.pdf",
+            },
+          ],
+        },
+        {
+          sheetMusicId: 2,
+          pdfFileList: [
+            {
+              pdfFileId: 2,
+              fileName: "ocarina.pdf",
+              fileSize: 1024,
+              url: "https://example.com/ocarina.pdf",
+            },
+          ],
+        },
+        {
+          sheetMusicId: 3,
+          pdfFileList: [
+            {
+              pdfFileId: 3,
+              fileName: "ocarina.pdf",
+              fileSize: 1024,
+              url: "https://example.com/ocarina.pdf",
+            },
+          ],
+        },
+      ],
+    },
+  });
+});
+
 app.post("/api/v1/sheet-musics", (req, res) => {
   setTimeout(() => {
     res.send({ isSuccess: true });
