@@ -31,8 +31,6 @@ app.ws("/tracking_progress", (ws, req) => {
 });
 
 app.post("/api/v1/sheet-musics", (req, res) => {
-  console.log("Headers: " + req.headers);
-  console.log("Body: " + req.body);
   setTimeout(() => {
     res.send({ isSuccess: true });
   }, 10000);
